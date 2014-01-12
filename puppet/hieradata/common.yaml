@@ -1,0 +1,57 @@
+---
+messageDefault: 'default'
+messageEnv:     'common'
+
+
+hosts:
+  'oimapp':
+    ip:                "10.10.10.10"
+    host_aliases:      - 'soaapp.example.com'
+                       - 'soaapp'
+  'oimdb':
+    ip:                "10.10.10.5"
+    host_aliases:      - 'soadb.example.com'
+                       - 'soadb'
+
+wls_jdk_version:          'jdk1.7.0_45'
+wls_user_config_dir:      '/home/oracle'
+
+# global WebLogic vars
+wls_oracle_base_home_dir: &wls_oracle_base_home_dir "/opt/oracle"
+wls_weblogic_user:        &wls_weblogic_user        "weblogic"
+wls_weblogic_home_dir:    &wls_weblogic_home_dir    "/opt/oracle/middleware11g/wlserver_10.3"
+wls_middleware_home_dir:  &wls_middleware_home_dir  "/opt/oracle/middleware11g"
+wls_version:              &wls_version              "1111"
+
+# global OS vars
+wls_os_user:              &wls_os_user              "oracle"
+wls_os_group:             &wls_os_group             "dba"
+wls_download_dir:         &wls_download_dir         "/data/install"
+wls_source:               &wls_source               "/software"
+wls_remote_file:                                    false
+wls_jdk_home_dir:         &wls_jdk_home_dir         "/usr/java/jdk1.7.0_45"
+wls_log_dir:              &wls_log_dir              "/data/logs"
+
+wls_domains_path_dir:      "/opt/oracle/middleware11g/user_projects/domains"
+
+
+# handy WebLogic scripts in /opt/scripts/wls
+orautils::osOracleHomeParam:      *wls_oracle_base_home_dir
+orautils::oraInventoryParam:      "/opt/oracle/oraInventory"
+orautils::osDomainTypeParam:      "soa"
+orautils::osLogFolderParam:       *wls_log_dir
+orautils::osDownloadFolderParam:  *wls_download_dir
+orautils::osMdwHomeParam:         *wls_middleware_home_dir
+orautils::osWlHomeParam:          *wls_weblogic_home_dir
+orautils::oraUserParam:           *wls_os_user
+
+orautils::osDomainParam:          "soaDomain"
+orautils::osDomainPathParam:      "/opt/oracle/middleware11g/user_projects/domains/oimDomain"
+orautils::nodeMgrPathParam:       "/opt/oracle/middleware11g/wlserver_10.3/server/bin"
+
+orautils::nodeMgrPortParam:       5556
+orautils::wlsUserParam:           *wls_weblogic_user
+orautils::wlsPasswordParam:       "weblogic1"
+orautils::wlsAdminServerParam:    "AdminServer"
+
+

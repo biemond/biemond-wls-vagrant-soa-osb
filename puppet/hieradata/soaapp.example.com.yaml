@@ -1,0 +1,15 @@
+---
+messageEnv: 'admin'
+
+
+# when you have just one domain on a server
+domain_name:                "soaDomain"
+domain_adminserver:         "AdminServer"
+domain_adminserver_address: "10.10.10.10"
+domain_adminserver_port:    7001
+domain_nodemanager_port:    5556
+domain_wls_password:        "weblogic1"
+domain_user_config_file:    "/home/oracle/oracle-soaDomain-WebLogicConfig.properties"
+domain_user_key_file:       "/home/oracle/oracle-soaDomain-WebLogicKey.properties"
+
+domain_template:            "osb_soa_bpm"
