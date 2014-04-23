@@ -1,5 +1,8 @@
 Oracle Database Linux puppet module
-=================================================
+===================================
+[![Build Status](https://travis-ci.org/biemond/biemond-oradb.png)](https://travis-ci.org/biemond/biemond-oradb)
+
+
 
 created by Edwin Biemond
 [biemond.blogspot.com](http://biemond.blogspot.com)
@@ -10,12 +13,25 @@ Should work for Solaris and all Linux version like RedHat, CentOS, Ubuntu, Debia
 Here you can test the solaris 10 vagrant box with Oracle Database 12.1  
 https://github.com/biemond/biemond-orawls-vagrant-solaris-soa
 
+Here you can test the CentOS 6.5 vagrant box with Oracle Database 11.2.0.4 and GoldenGate 12.1.2  
+https://github.com/biemond/vagrant-wls12.1.2-coherence-goldengate
 
-Works with Puppet 2.7 & 3.0
+Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box (https://github.com/biemond/vagrant-puppetmaster) 
+- oradb (oracle database 11.2.0.1 ) with GoldenGate 12.1.2
+
+Should work for Puppet 2.7 & 3.0
 
 Version updates
 ---------------
 
+- 1.0.2 opatch native types
+- 1.0.1 autostart multiple databases, small fixes
+- 1.0.0 oracle module add-on for user,role and tablespace creation
+- 0.9.9 emConfiguration parameter for Database creation
+- 0.9.7 Oracle database 11.2.0.1, 12.1.0.1 client support, refactored installdb,net,goldengate
+- 0.9.6 GoldenGate 11.2 support
+- 0.9.6 GoldenGate 12.1.2 support
+- 0.9.5 RCU fixes for OIM,OAM
 - 0.9.0 Solaris Support,Own DB facts, no conflict with orawls or wls
 - 0.8.9 RCU allows existing Temp tablespace
 - 0.8.7 Readme update
@@ -43,13 +59,21 @@ Oracle Database Features
 - Oracle Database 11.2.0.4 Linux / Solaris installation
 - Oracle Database 11.2.0.3 Linux / Solaris installation
 - Oracle Database 11.2.0.1 Linux / Solaris installation
+- Oracle Database Client 12.1.0.1, 11.2.0.1 Linux / Solaris installation
 - Oracle Database Net configuration
 - Oracle Database Listener
 - OPatch upgrade
 - Apply OPatch
 - Create database instances
 - Stop/Start database instances
+- GoldenGate 12.1.2, 11.2.1
 - Installs RCU repositoy for Oracle SOA Suite / Webcenter ( 11.1.1.6.0 and 11.1.1.7.0 ) / Oracle Identity Management ( 11.1.2.1 )
+
+In combination with the oracle module of Bert Hajee (http://forge.puppetlabs.com/hajee/oracle) you can also create
+- create a tablespace
+- create a user with the required grants and quota's
+- create one or more roles
+- create one or more services
 
 Some manifests like installdb.pp, opatch.pp or rcusoa.pp supports an alternative mountpoint for the big oracle files.
 When not provided it uses the files location of the oradb puppet module
@@ -66,8 +90,6 @@ else you can use $source =>
 - "puppet:///database/"  
 
 when the files are also accesiable locally then you can also set $remote_file => false this will not move the files to the download folder, just extract or install 
-
-
 
 Files
 -----
@@ -112,12 +134,18 @@ upload these files to the files folder of the oradb puppet module
 # opatch upgrade
 - 32551984 Jul  6 18:58 p6880880_112000_Linux-x86-64.zip
 
-# database client linux 11.2.0.1 ( otn.oracle.com )
-- 706187979 Mar 10 16:48 linux.x64_11gR2_client.zip
+# database client linux  ( otn.oracle.com )
+- linux.x64_11gR2_client.zip ( version 11.2.0.1 )
+- linuxamd64_12c_client.zip  ( version 12.1.0.1 )
 
 # rcu linux installer
 - 408989041 Mar 17 20:17 ofm_rcu_linux_11.1.1.6.0_disk1_1of1.zip
 - 411498103 Apr  1 21:23 ofm_rcu_linux_11.1.1.7.0_32_disk1_1of1.zip
+
+# goldengate for Oracle 11g & Oracle 12c
+- 121200_fbo_ggs_Linux_x64_shiphome.zip
+- ogg112101_fbo_ggs_Linux_x64_ora11g_64bit.zip
+- V38714-01.zip
 
 important support node
 [ID 1441282.1] Requirements for Installing Oracle 11gR2 RDBMS on RHEL6 or OL6 64-bit (x86-64)
@@ -230,7 +258,7 @@ other
         patchFile              => 'p6880880_112000_Linux-x86-64.zip',
         csiNumber              => '11111',
         supportId              => 'biemond@gmail.com',
-        opversion              => '11.2.0.3.4',
+        opversion              => '11.2.0.3.6',
         user                   => 'oracle',
         group                  => 'dba',
         downloadDir            => '/install',
@@ -300,6 +328,7 @@ other
                       memoryPercentage        => "40",
                       memoryTotal             => "800",
                       databaseType            => "MULTIPURPOSE",
+                      emConfiguration         => "NONE",
                       require                 => Oradb::Listener['start listener'],
     }
     
@@ -366,6 +395,160 @@ other
         }
       }
     }
+
+Oracle Database Client 12.1.0.1 and 11.2.0.1 
+
+     oradb::client{ '12.1.0.1_Linux-x86-64':
+            version                => '12.1.0.1',
+            file                   => 'linuxamd64_12c_client.zip',
+            oracleBase             => '/oracle',
+            oracleHome             => '/oracle/product/12.1/client',
+            createUser             => true,
+            user                   => 'oracle',
+            group                  => 'dba',
+            downloadDir            => '/install',
+            remoteFile             => true,
+            puppetDownloadMntPoint => "puppet:///modules/oradb/",
+            logoutput               => true, 
+     }
+
+or 
+
+     oradb::client{ '11.2.0.1_Linux-x86-64':
+            version                => '11.2.0.1',
+            file                   => 'linux.x64_11gR2_client.zip',
+            oracleBase             => '/oracle',
+            oracleHome             => '/oracle/product/11.2/client',
+            createUser             => true,
+            user                   => 'oracle',
+            group                  => 'dba',
+            downloadDir            => '/install',
+            remoteFile             => false,
+            puppetDownloadMntPoint => "/software",
+            logoutput              => true,
+     }
+
+
+In combination with the oracle puppet module you can create a tablespace,role and oracle user   
+
+    tablespace {'scott_ts':
+      ensure                    => present,
+      size                      => 100M,
+      datafile                  => 'scott_ts.dbf',
+      logging                   => yes,
+      autoextend                => on,
+      next                      => 100M,
+      max_size                  => 12288M,
+      extent_management         => local,
+      segment_space_management  => auto,
+    }
+    
+    role {'apps':
+      ensure    => present,
+    }
+    
+    oracle_user{'scott':
+      temporary_tablespace      => temp,
+      default_tablespace        => 'scott_ts',
+      password                  => 'tiger',
+      grants                    => ['SELECT ANY TABLE',
+                                    'CONNECT',
+                                    'RESOURCE',
+                                    'apps'],
+      quotas                    => { "scott_ts" => 'unlimited'},
+      require                   => [Tablespace['scott_ts'],
+                                    Role['apps']],
+    }
+
+
+Oracle GoldenGate 12.1.2 and 11.2.1 
+
+      group { 'dba' :
+        ensure      => present,
+      }
+    
+      user { 'ggate' :
+        ensure      => present,
+        gid         => 'dba',  
+        groups      => 'dba',
+        shell       => '/bin/bash',
+        password    => '$1$DSJ51vh6$4XzzwyIOk6Bi/54kglGk3.',
+        home        => "/home/ggate",
+        comment     => "This user ggate was created by Puppet",
+        require     => Group['dba'],
+        managehome  => true,
+      }
+
+      file { "/oracle/product" :
+        ensure        => directory,
+        recurse       => false,
+        replace       => false,
+        mode          => 0775,
+        group         => hiera('oracle_os_group'),
+      }
+
+      oradb::goldengate{ 'ggate12.1.2':
+                         version                 => '12.1.2',
+                         file                    => '121200_fbo_ggs_Linux_x64_shiphome.zip',
+                         databaseType            => 'Oracle',
+                         databaseVersion         => 'ORA11g',
+                         databaseHome            => '/oracle/product/11.2/db',
+                         oracleBase              => '/oracle',
+                         goldengateHome          => "/oracle/product/12.1.2/ggate",
+                         managerPort             => 16000,
+                         user                    => 'ggate',
+                         group                   => 'dba',
+                         downloadDir             => '/install',
+                         puppetDownloadMntPoint  => hiera('oracle_source'),
+                         require                 => File["/oracle/product"],
+      }
+
+      file { "/oracle/product/12.1.2/ggate/OPatch" :
+        ensure        => directory,
+        recurse       => true,
+        replace       => false,
+        mode          => 0775,
+        group         => hiera('oracle_os_group'),
+        require       => Oradb::Goldengate['ggate12.1.2'],
+      }
+
+
+
+      file { "/oracle/product/11.2.1" :
+        ensure        => directory,
+        recurse       => false,
+        replace       => false,
+        mode          => 0775,
+        owner         => 'ggate',
+        group         => hiera('oracle_os_group'),
+      }
+
+
+      oradb::goldengate{ 'ggate11.2.1':
+                         version                 => '11.2.1',
+                         file                    => 'ogg112101_fbo_ggs_Linux_x64_ora11g_64bit.zip',
+                         tarFile                 => 'fbo_ggs_Linux_x64_ora11g_64bit.tar',
+                         goldengateHome          => "/oracle/product/11.2.1/ggate",
+                         user                    => hiera('ggate_os_user'),
+                         group                   => hiera('oracle_os_group'),
+                         downloadDir             => '/install',
+                         puppetDownloadMntPoint  =>  hiera('oracle_source'),
+                         require                 => [File["/oracle/product"],File["/oracle/product/11.2.1"]]
+      }
+
+      oradb::goldengate{ 'ggate11.2.1_java':
+                         version                 => '11.2.1',
+                         file                    => 'V38714-01.zip',
+                         tarFile                 => 'ggs_Adapters_Linux_x64.tar',
+                         goldengateHome          => "/oracle/product/11.2.1/ggate_java",
+                         user                    => hiera('ggate_os_user'),
+                         group                   => hiera('oracle_os_group'),
+                         downloadDir             => '/install',
+                         puppetDownloadMntPoint  =>  hiera('oracle_source'),
+                         require                 => [File["/oracle/product"],File["/oracle/product/11.2.1"]]
+      }
+
+
 
 Oracle SOA Suite Repository Creation Utility (RCU)  
 

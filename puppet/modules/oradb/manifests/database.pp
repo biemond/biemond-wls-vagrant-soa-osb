@@ -8,6 +8,7 @@
 #  oradb::database{ 'testDb':
 #                   oracleBase              => '/oracle',
 #                   oracleHome              => '/oracle/product/11.2/db',
+#                   version                 => "11.2",
 #                   user                    => 'oracle',
 #                   group                   => 'dba',
 #                   downloadDir             => '/install',
@@ -25,6 +26,7 @@
 #                   memoryPercentage        => "40",
 #                   memoryTotal             => "800",
 #                   databaseType            => "MULTIPURPOSE",
+#                   emConfiguration         => "NONE",
 #                   require                 => Oradb::Listener['start listener'],
 #  }
 #
@@ -38,7 +40,7 @@ define oradb::database( $oracleBase               = undef,
                         $downloadDir              = '/install',
                         $action                   = 'create',
                         $dbName                   = 'orcl',
-                        $dbDomain                 = 'oracle.com',
+                        $dbDomain                 = undef,
                         $sysPassword              = 'Welcome01',
                         $systemPassword           = 'Welcome01',
                         $dataFileDestination      = undef,
@@ -50,6 +52,7 @@ define oradb::database( $oracleBase               = undef,
                         $memoryPercentage         = "40",
                         $memoryTotal              = "800",
                         $databaseType             = "MULTIPURPOSE",
+                        $emConfiguration          = "NONE",  # CENTRAL|LOCAL|ALL|NONE
 )
 
 {
@@ -64,22 +67,31 @@ define oradb::database( $oracleBase               = undef,
       Linux,SunOS: {
         $execPath    = "${oracleHome}/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:"
         $path        = $downloadDir
-        Exec { path  => $execPath,
-          user       => $user,
-          group      => $group,
-          logoutput  => true,
+
+        Exec { 
+          path        => $execPath,
+          user        => $user,
+          group       => $group,
+          environment => ["USER=${user}",],
+          logoutput   => true,
         }
+
         File {
           ensure     => present,
           mode       => 0775,
           owner      => $user,
           group      => $group,
         }
+
       }
       default: {
         fail("Unrecognized operating system")
       }
     }
+
+    $sanitized_title = regsubst($title, "[^a-zA-Z0-9.-]", "_", "G")
+
+    $filename = "${path}/database_${sanitized_title}.rsp"
 
     if $action == 'create' {
       $operationType = 'createDatabase'
@@ -89,9 +101,14 @@ define oradb::database( $oracleBase               = undef,
       fail("Unrecognized database action")
     }
 
-    $globalDbName    = "${dbName}.${dbDomain}"
-    if ! defined(File["${path}/database_${title}.rsp"]) {
-      file { "${path}/database_${title}.rsp":
+    if $dbDomain {
+        $globalDbName = "${dbName}.${dbDomain}"
+    } else {
+        $globalDbName = $dbName
+    }
+
+    if ! defined(File[$filename]) {
+      file { $filename:
         ensure       => present,
         content      => template("oradb/dbca_${version}.rsp.erb"),
       }
@@ -99,15 +116,15 @@ define oradb::database( $oracleBase               = undef,
 
     if $action == 'create' {
       exec { "install oracle database ${title}":
-        command      => "dbca -silent -responseFile ${path}/database_${title}.rsp",
-        require      => File["${path}/database_${title}.rsp"],
+        command      => "dbca -silent -responseFile ${filename}",
+        require      => File[$filename],
         creates      => "${oracleBase}/admin/${dbName}",
         timeout      => 0,
       }
     } elsif $action == 'delete' {
       exec { "delete oracle database ${title}":
-        command      => "dbca -silent -responseFile ${path}/database_${title}.rsp",
-        require      => File["${path}/database_${title}.rsp"],
+        command      => "dbca -silent -responseFile ${filename}",
+        require      => File[$filename],
         onlyif       => "ls ${oracleBase}/admin/${dbName}",
         timeout      => 0,
       }
