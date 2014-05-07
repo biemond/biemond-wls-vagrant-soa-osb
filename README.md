@@ -11,7 +11,7 @@ uses a CentOS 6.5 vagrant box for Virtualbox which includes puppet 3.4.2
 - creates a Oracle SE database 11.2.0.4 with SOA Suite Repository ( soadb )
 
 ##Software
-Add the all the Oracle binaris to /software, edit Vagrantfile and update
+Add the all the Oracle binaries to /software, edit Vagrantfile and update
 - soaapp.vm.synced_folder "/Users/edwin/software", "/software"
 - soadb.vm.synced_folder "/Users/edwin/software", "/software"
 
