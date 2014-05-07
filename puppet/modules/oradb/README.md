@@ -1,8 +1,5 @@
-Oracle Database Linux puppet module
-===================================
+#Oracle Database Linux puppet module
 [![Build Status](https://travis-ci.org/biemond/biemond-oradb.png)](https://travis-ci.org/biemond/biemond-oradb)
-
-
 
 created by Edwin Biemond
 [biemond.blogspot.com](http://biemond.blogspot.com)
@@ -21,47 +18,29 @@ Example of Opensource Puppet 3.4.3 Puppet master configuration in a vagrant box 
 
 Should work for Puppet 2.7 & 3.0
 
-Version updates
----------------
+##Version updates
 
-- 1.0.2 opatch native types
+- 1.0.6 Grid install and ASM support
+- 1.0.5 refactored installdb and support for oinstall groups
+- 1.0.4 db_rcu native type used in rcu.pp
+- 1.0.2 db_opatch native type used in opatch.pp
 - 1.0.1 autostart multiple databases, small fixes
 - 1.0.0 oracle module add-on for user,role and tablespace creation
 - 0.9.9 emConfiguration parameter for Database creation
 - 0.9.7 Oracle database 11.2.0.1, 12.1.0.1 client support, refactored installdb,net,goldengate
-- 0.9.6 GoldenGate 11.2 support
-- 0.9.6 GoldenGate 12.1.2 support
-- 0.9.5 RCU fixes for OIM,OAM
-- 0.9.0 Solaris Support,Own DB facts, no conflict with orawls or wls
-- 0.8.9 RCU allows existing Temp tablespace
-- 0.8.7 Readme update
-- 0.8.6 RCU OIM option for Oracle Identity Management
-- 0.8.5 timeout = 0 and added -ignoreSysPrereqs -ignorePrereq on installdb
-- 0.8.4 updated license to Apache 2.0
-- 0.8.3 support for extracted oracle software (shared storage) with zipExtract , RCU product value "all"    
-- 0.8.2 OPatch upgrade fix for Offline, option to skip to create user and group    
-- 0.8.1 Removed sleep and replaced by waitforcompletion
-- 0.8.0 Autostart bugfixes and support for oracle 11.2.0.4  database
-- 0.7.9 Autostart of listener and database with chkconfig / init.d
-- 0.7.8 Added Suse SLES as Operating System
-- 0.7.7 RCU support for WebCenter and SOA Suite
-- 0.7.6 OPatch upgrade made by Ronald Hatcher
-- 0.7.5 support for Oracle database 12c or 12.1.0.1 plus bug fixes
-- 0.7.4 puppet 3.0 compatible
-- 0.7.3 bugfixes plus facts in sync with wls modules
-- 0.7.2 bugfixes for rcu and database facts
 
 
-Oracle Database Features
----------------------------
+##Oracle Database Features
 
+- Oracle Grid 11.2.0.4 Linux / Solaris installation
 - Oracle Database 12.1.0.1 Linux / Solaris installation
 - Oracle Database 11.2.0.4 Linux / Solaris installation
 - Oracle Database 11.2.0.3 Linux / Solaris installation
 - Oracle Database 11.2.0.1 Linux / Solaris installation
-- Oracle Database Client 12.1.0.1, 11.2.0.1 Linux / Solaris installation
+- Oracle Database Client 12.1.0.1,11.2.0.4,11.2.0.1 Linux / Solaris installation
 - Oracle Database Net configuration
 - Oracle Database Listener
+- Oracle ASM
 - OPatch upgrade
 - Apply OPatch
 - Create database instances
@@ -79,8 +58,7 @@ Some manifests like installdb.pp, opatch.pp or rcusoa.pp supports an alternative
 When not provided it uses the files location of the oradb puppet module
 else you can use $puppetDownloadMntPoint => "/mnt" or "puppet:///modules/xxxx/"
 
-Oracle Big files and alternate download location
-------------------------------------------------
+##Oracle Big files and alternate download location
 Some manifests like oradb:installdb, opatch or rcu supports an alternative mountpoint for the big oracle setup/install files.  
 When not provided it uses the files folder located in the orawls puppet module  
 else you can use $source =>
@@ -91,7 +69,7 @@ else you can use $source =>
 
 when the files are also accesiable locally then you can also set $remote_file => false this will not move the files to the download folder, just extract or install 
 
-Files
+##Files
 -----
 - 11.2.0.1 Download oracle database linux software from http://otn.oracle.com
 - 11.2.0.3 Download oracle database linux software from http://support.oracle.com
@@ -99,50 +77,52 @@ Files
 - 11.2.0.4 Download oracle database linux software from http://support.oracle.com
 - 12.1.0.1 Download oracle database linux software from http://otn.oracle.com
 
-upload these files to the files folder of the oradb puppet module
+optional upload these files to the files folder of the oradb puppet module
 
 
-# database files of linux 12.1.0.1 ( otn.oracle.com )
+##database files of linux 12.1.0.1 ( otn.oracle.com )
 - 1361028723 Jun 27 23:38 linuxamd64_12c_database_1of2.zip
 - 1116527103 Jun 27 23:38 linuxamd64_12c_database_2of2.zip
 
-# database files of linux 11.2.0.3 ( support.oracle.com )
+###database files of linux 11.2.0.3 ( support.oracle.com )
 - 1358454646 Mar  9 17:31 p10404530_112030_Linux-x86-64_1of7.zip
 - 1142195302 Mar  9 17:47 p10404530_112030_Linux-x86-64_2of7.zip
--  979195792 Mar  9 18:01 p10404530_112030_Linux-x86-64_3of7.zip
--  659229728 Mar  9 18:11 p10404530_112030_Linux-x86-64_4of7.zip
--  616473105 Mar  9 18:19 p10404530_112030_Linux-x86-64_5of7.zip
--  479890040 Mar  9 18:26 p10404530_112030_Linux-x86-64_6of7.zip
--  113915106 Mar  9 18:28 p10404530_112030_Linux-x86-64_7of7.zip
 
-# database files of linux 11.2.0.4 ( support.oracle.com )
+###grid
+-  979195792 Mar  9 18:01 p10404530_112030_Linux-x86-64_3of7.zip
+
+###client
+-  659229728 Mar  9 18:11 p10404530_112030_Linux-x86-64_4of7.zip
+
+##database files of linux 11.2.0.4 ( support.oracle.com )
 - 1395582860 Aug 31 16:21 p13390677_112040_Linux-x86-64_1of7.zip
 - 1151304589 Aug 31 16:22 p13390677_112040_Linux-x86-64_2of7.zip
-- 1205251894 Aug 31 16:22 p13390677_112040_Linux-x86-64_3of7.zip
--  656026876 Aug 31 16:22 p13390677_112040_Linux-x86-64_4of7.zip
--  599170344 Aug 31 16:23 p13390677_112040_Linux-x86-64_5of7.zip
--  488372844 Aug 31 16:23 p13390677_112040_Linux-x86-64_6of7.zip
--  119521122 Aug 31 16:23 p13390677_112040_Linux-x86-64_7of7.zip
 
-# database files of linux 11.2.0.1 ( otn.oracle.com )
+###grid 
+- 1205251894 Aug 31 16:22 p13390677_112040_Linux-x86-64_3of7.zip
+
+###client
+-  656026876 Aug 31 16:22 p13390677_112040_Linux-x86-64_4of7.zip
+
+##database files of linux 11.2.0.1 ( otn.oracle.com )
 - 1239269270 Mar 10 17:05 linux.x64_11gR2_database_1of2.zip
 - 1111416131 Mar 10 17:17 linux.x64_11gR2_database_2of2.zip
 
-# opatch database patch for 11.2.0.3
+##opatch database patch for 11.2.0.3
 - 25556377 Mar 10 12:48 p14727310_112030_Linux-x86-64.zip
 
-# opatch upgrade
+##opatch upgrade
 - 32551984 Jul  6 18:58 p6880880_112000_Linux-x86-64.zip
 
-# database client linux  ( otn.oracle.com )
+##database client linux  ( otn.oracle.com )
 - linux.x64_11gR2_client.zip ( version 11.2.0.1 )
 - linuxamd64_12c_client.zip  ( version 12.1.0.1 )
 
-# rcu linux installer
+##rcu linux installer
 - 408989041 Mar 17 20:17 ofm_rcu_linux_11.1.1.6.0_disk1_1of1.zip
 - 411498103 Apr  1 21:23 ofm_rcu_linux_11.1.1.7.0_32_disk1_1of1.zip
 
-# goldengate for Oracle 11g & Oracle 12c
+##goldengate for Oracle 11g & Oracle 12c
 - 121200_fbo_ggs_Linux_x64_shiphome.zip
 - ogg112101_fbo_ggs_Linux_x64_ora11g_64bit.zip
 - V38714-01.zip
@@ -151,8 +131,7 @@ important support node
 [ID 1441282.1] Requirements for Installing Oracle 11gR2 RDBMS on RHEL6 or OL6 64-bit (x86-64)
 
 
-Oracle Database Facter
--------------------
+##Oracle Database Facter
 Contains Oracle Facter which displays the following
 - Oracle Software
 - Opatch patches
@@ -163,15 +142,14 @@ Contains Oracle Facter which displays the following
     oradb_inst_patches_oracle_product_11.2_db Patches;14727310;
     oradb_inst_products /oracle/product/11.2/db;
 
-templates.pp
-------------
+##templates.pp
 
 The databaseType value should contain only one of these choices.
 - EE = Enterprise Edition
 - SE = Standard Edition
 - SEONE = Standard Edition One
 
-normal install
+## database install
 
     $puppetDownloadMntPoint = "puppet:///modules/oradb/"
     
@@ -184,6 +162,8 @@ normal install
             createUser             => true,
             user                   => 'oracle',
             group                  => 'dba',
+            group_install          => 'oinstall',
+            group_oper             => 'oper',
             downloadDir            => '/data/install',
             zipExtract             => true,
             puppetDownloadMntPoint => $puppetDownloadMntPoint,
@@ -199,6 +179,8 @@ or with zipExtract ( does not download or extract , software is in /install/linu
             oracleHome             => '/oracle/product/12.1/db',
             user                   => 'oracle',
             group                  => 'dba',
+            group_install          => 'oinstall',
+            group_oper             => 'oper',
             createUser             => true,
             downloadDir            => '/install',
             zipExtract             => false,
@@ -215,6 +197,8 @@ or
             createUser             => true,
             user                   => 'oracle',
             group                  => 'dba',
+            group_install          => 'oinstall',
+            group_oper             => 'oper',
             downloadDir            => '/install',
             zipExtract             => true,
             puppetDownloadMntPoint => $puppetDownloadMntPoint,
@@ -231,6 +215,8 @@ or
             createUser             => true,
             user                   => 'oracle',
             group                  => 'dba',
+            group_install          => 'oinstall',
+            group_oper             => 'oper',
             downloadDir            => '/install',
             zipExtract             => true,
             puppetDownloadMntPoint => $puppetDownloadMntPoint,
@@ -239,16 +225,18 @@ or
 or
 
     oradb::installdb{ '112010_Linux-x86-64':
-            version      => '11.2.0.1',
-            file         => 'linux.x64_11gR2_database',
-            databaseType => 'SE',
-            oracleBase   => '/oracle',
-            oracleHome   => '/oracle/product/11.2/db',
-            createUser   => true,
-            user         => 'oracle',
-            group        => 'dba',
-            downloadDir  => '/install',
-            zipExtract   => true,
+            version       => '11.2.0.1',
+            file          => 'linux.x64_11gR2_database',
+            databaseType  => 'SE',
+            oracleBase    => '/oracle',
+            oracleHome    => '/oracle/product/11.2/db',
+            createUser    => true,
+            user          => 'oracle',
+            group         => 'dba',
+            group_install => 'oinstall',
+            group_oper    => 'oper',
+            downloadDir   => '/install',
+            zipExtract    => true,
      }
 
 other
@@ -396,7 +384,113 @@ other
       }
     }
 
-Oracle Database Client 12.1.0.1 and 11.2.0.1 
+##Grid install with ASM 
+
+      $all_groups = ['oinstall','dba' ,'oper','asmdba','asmadmin','asmoper']
+
+      group { $all_groups :
+        ensure      => present,
+      }
+
+      user { 'oracle' :
+        ensure      => present,
+        uid         => 500,
+        gid         => 'oinstall',  
+        groups      => ['oinstall','dba','oper','asmdba'],
+        shell       => '/bin/bash',
+        password    => '$1$DSJ51vh6$4XzzwyIOk6Bi/54kglGk3.',
+        home        => "/home/oracle",
+        comment     => "This user oracle was created by Puppet",
+        require     => Group[$all_groups],
+        managehome  => true,
+      }
+
+      user { 'grid' :
+        ensure      => present,
+        uid         => 501,
+        gid         => 'oinstall',  
+        groups      => ['oinstall','dba','asmadmin','asmdba','asmoper'],
+        shell       => '/bin/bash',
+        password    => '$1$DSJ51vh6$4XzzwyIOk6Bi/54kglGk3.',
+        home        => "/home/grid",
+        comment     => "This user grid was created by Puppet",
+        require     => Group[$all_groups],
+        managehome  => true,
+      }
+
+      oradb::installasm{ '11.2_linux-x64':
+        version                => '11.2.0.4',
+        file                   => 'p13390677_112040_Linux-x86-64_3of7.zip',
+        gridType               => 'HA_CONFIG',
+        gridBase               => hiera('grid_base_dir'),
+        gridHome               => hiera('grid_home_dir'),
+        oraInventoryDir        => hiera('oraInventory_dir'),
+        userBaseDir            => '/home',
+        user                   => hiera('grid_os_user'),
+        group                  => 'asmdba',
+        group_install          => 'oinstall',
+        group_oper             => 'asmoper',
+        group_asm              => 'asmadmin',
+        sys_asm_password       => 'Welcome01',
+        asm_monitor_password   => 'Welcome01',
+        asm_diskgroup          => 'DATA',
+        disk_discovery_string  => "/nfs_client/asm*",
+        disks                  => "/nfs_client/asm_sda_nfs_b1,/nfs_client/asm_sda_nfs_b2",
+        # disk_discovery_string  => "ORCL:*",
+        # disks                  => "ORCL:DISK1,ORCL:DISK2",
+        disk_redundancy        => "EXTERNAL",
+        downloadDir            => hiera('oracle_download_dir'),
+        remoteFile             => false,
+        puppetDownloadMntPoint => hiera('oracle_source'),  
+      }
+
+      oradb::installdb{ '11.2_linux-x64':
+        version                => '11.2.0.4',
+        file                   => 'p13390677_112040_Linux-x86-64',
+        databaseType           => 'EE',
+        oraInventoryDir        => hiera('oraInventory_dir'),
+        oracleBase             => hiera('oracle_base_dir'),
+        oracleHome             => hiera('oracle_home_dir'),
+        userBaseDir            => '/home',
+        createUser             => false,
+        user                   => hiera('oracle_os_user'),
+        group                  => 'dba',
+        group_install          => 'oinstall',
+        group_oper             => 'oper',
+        downloadDir            => hiera('oracle_download_dir'),
+        remoteFile             => false,
+        puppetDownloadMntPoint => hiera('oracle_source'),
+        require                => Oradb::Installasm['11.2_linux-x64'],  
+      }
+
+      oradb::database{ 'oraDb': 
+        oracleBase              => hiera('oracle_base_dir'),
+        oracleHome              => hiera('oracle_home_dir'),
+        version                 => '11.2',
+        user                    => hiera('oracle_os_user'),
+        group                   => hiera('oracle_os_group'),
+        downloadDir             => hiera('oracle_download_dir'),
+        action                  => 'create',
+        dbName                  => hiera('oracle_database_name'),
+        dbDomain                => hiera('oracle_database_domain_name'),
+        sysPassword             => hiera('oracle_database_sys_password'),
+        systemPassword          => hiera('oracle_database_system_password'),
+        characterSet            => "AL32UTF8",
+        nationalCharacterSet    => "UTF8",
+        initParams              => "open_cursors=1000,processes=600,job_queue_processes=4",
+        sampleSchema            => 'FALSE',
+        memoryPercentage        => "40",
+        memoryTotal             => "800",
+        databaseType            => "MULTIPURPOSE",                         
+        storageType             => "ASM",
+        asmSnmpPassword         => 'Welcome01',
+        asmDiskgroup            => 'DATA',
+        recoveryDiskgroup       => undef,
+        recoveryAreaDestination => 'DATA',
+        require                 => Oradb::Installdb['11.2_linux-x64'],
+      }
+
+## Oracle Database Client
 
      oradb::client{ '12.1.0.1_Linux-x86-64':
             version                => '12.1.0.1',
@@ -406,6 +500,7 @@ Oracle Database Client 12.1.0.1 and 11.2.0.1
             createUser             => true,
             user                   => 'oracle',
             group                  => 'dba',
+            group_install          => 'oinstall',
             downloadDir            => '/install',
             remoteFile             => true,
             puppetDownloadMntPoint => "puppet:///modules/oradb/",
@@ -422,6 +517,7 @@ or
             createUser             => true,
             user                   => 'oracle',
             group                  => 'dba',
+            group_install          => 'oinstall',
             downloadDir            => '/install',
             remoteFile             => false,
             puppetDownloadMntPoint => "/software",
@@ -429,6 +525,7 @@ or
      }
 
 
+##Database configuration
 In combination with the oracle puppet module you can create a tablespace,role and oracle user   
 
     tablespace {'scott_ts':
@@ -461,21 +558,24 @@ In combination with the oracle puppet module you can create a tablespace,role an
     }
 
 
-Oracle GoldenGate 12.1.2 and 11.2.1 
+##Oracle GoldenGate 12.1.2 and 11.2.1 
 
-      group { 'dba' :
+
+      $groups = ['oinstall','dba']
+
+      group { $groups :
         ensure      => present,
+        before      => User['ggate'],
       }
     
       user { 'ggate' :
         ensure      => present,
         gid         => 'dba',  
-        groups      => 'dba',
+        groups      => $groups,
         shell       => '/bin/bash',
         password    => '$1$DSJ51vh6$4XzzwyIOk6Bi/54kglGk3.',
         home        => "/home/ggate",
         comment     => "This user ggate was created by Puppet",
-        require     => Group['dba'],
         managehome  => true,
       }
 
@@ -498,6 +598,7 @@ Oracle GoldenGate 12.1.2 and 11.2.1
                          managerPort             => 16000,
                          user                    => 'ggate',
                          group                   => 'dba',
+                         group_install           => 'oinstall',
                          downloadDir             => '/install',
                          puppetDownloadMntPoint  => hiera('oracle_source'),
                          require                 => File["/oracle/product"],
@@ -543,6 +644,7 @@ Oracle GoldenGate 12.1.2 and 11.2.1
                          goldengateHome          => "/oracle/product/11.2.1/ggate_java",
                          user                    => hiera('ggate_os_user'),
                          group                   => hiera('oracle_os_group'),
+                         group_install           => 'oinstall',
                          downloadDir             => '/install',
                          puppetDownloadMntPoint  =>  hiera('oracle_source'),
                          require                 => [File["/oracle/product"],File["/oracle/product/11.2.1"]]
@@ -550,7 +652,7 @@ Oracle GoldenGate 12.1.2 and 11.2.1
 
 
 
-Oracle SOA Suite Repository Creation Utility (RCU)  
+##Oracle SOA Suite Repository Creation Utility (RCU)  
 
 product =
 - soasuite
@@ -636,8 +738,7 @@ OIM, OAM repository, OIM needs an Oracle Enterprise Edition database
      }
 
 
-Linux kernel, ulimits and required packages
--------------------------------------------
+##Linux kernel, ulimits and required packages
 
 install the following module to set the database kernel parameters
 *puppet module install fiddyspence-sysctl*
@@ -645,8 +746,24 @@ install the following module to set the database kernel parameters
 install the following module to set the database user limits parameters
 *puppet module install erwbgy-limits*
 
+      group { 'dba' :
+        ensure      => present,
+      }
 
-     node database {
+      user { 'oracle' :
+        ensure      => present,
+        gid         => 'dba',  
+        groups      => 'dba',
+        shell       => '/bin/bash',
+        password    => '$1$DSJ51vh6$4XzzwyIOk6Bi/54kglGk3.',
+        home        => "/home/oracle",
+        comment     => "This user oracle was created by Puppet",
+        require     => Group['dba'],
+        managehome  => true,
+      }
+
+
+
        sysctl { 'kernel.msgmnb':                 ensure => 'present', permanent => 'yes', value => '65536',}
        sysctl { 'kernel.msgmax':                 ensure => 'present', permanent => 'yes', value => '65536',}
        sysctl { 'kernel.shmmax':                 ensure => 'present', permanent => 'yes', value => '2588483584',}
@@ -676,23 +793,19 @@ install the following module to set the database user limits parameters
          use_hiera => false,
        }
        
-       $install = [ 'binutils.x86_64', 'compat-libstdc++-33.x86_64', 'glibc.x86_64','ksh.x86_64','libaio.x86_64',
+      $install = [ 'binutils.x86_64', 'compat-libstdc++-33.x86_64', 'glibc.x86_64','ksh.x86_64','libaio.x86_64',
                     'libgcc.x86_64', 'libstdc++.x86_64', 'make.x86_64','compat-libcap1.x86_64', 'gcc.x86_64',
                     'gcc-c++.x86_64','glibc-devel.x86_64','libaio-devel.x86_64','libstdc++-devel.x86_64',
                     'sysstat.x86_64','unixODBC-devel','glibc.i686','libXext.i686','libXtst.i686']
        
-       package { $install:
-         ensure  => present,
-       }
+      package { $install:
+        ensure  => present,
+      }
      
-     }
-     
-     node 'dbagent1.alfa.local' inherits database {
-     }
 
 
-Solaris 10 kernel, ulimits and required packages
-------------------------------------------------
+
+##Solaris 10 kernel, ulimits and required packages
 
     exec { "create /cdrom/unnamed_cdrom":
       command => "/usr/bin/mkdir -p /cdrom/unnamed_cdrom",
@@ -736,22 +849,13 @@ Solaris 10 kernel, ulimits and required packages
     
     # pkginfo -i SUNWarc SUNWbtool SUNWhea SUNWlibC SUNWlibm SUNWlibms SUNWsprot SUNWtoo SUNWi1of SUNWi1cs SUNWi15cs SUNWxwfnt SUNWcsl SUNWdtrc
     # pkgadd -d /cdrom/unnamed_cdrom/Solaris_10/Product/ -r response -a response SUNWarc SUNWbtool SUNWhea SUNWlibC SUNWlibm SUNWlibms SUNWsprot SUNWtoo SUNWi1of SUNWi1cs SUNWi15cs SUNWxwfnt SUNWcsl SUNWdtrc
-    
-    exec { "remove localhost":
-      command => "/usr/bin/sed -e '/'127.0.0.1'/ d' /etc/hosts > /tmp/hosts.tmp && mv /tmp/hosts.tmp /etc/hosts",
-      unless  => "/usr/bin/grep -c ${hostname} /etc/hosts",
-    }
-    
-    exec { "add localhost":
-      command => "/bin/echo '127.0.0.1 localhost ${fqdn} ${hostname}' >>/etc/hosts",
-      unless  => "/usr/bin/grep -c ${hostname} /etc/hosts",
-      require => Exec["remove localhost"],
-    }
   
-    group { 'dba' :
+    $groups = ['oinstall','dba' ,'oper' ]
+
+    group { $groups :
       ensure      => present,
-    }
-  
+    }  
+
     user { 'oracle' :
       ensure      => present,
       gid         => 'dba',  
@@ -760,7 +864,7 @@ Solaris 10 kernel, ulimits and required packages
       password    => '$1$DSJ51vh6$4XzzwyIOk6Bi/54kglGk3.',
       home        => "/export/home/oracle",
       comment     => "This user ${user} was created by Puppet",
-      require     => Group['dba'],
+      require     => Group[$groups],
       managehome  => true,
     }
   

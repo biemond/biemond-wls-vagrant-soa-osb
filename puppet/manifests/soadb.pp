@@ -2,32 +2,33 @@ node 'soadb'  {
    include soadb_os
    include soadb_11g
    include soadb_maintenance
-   include soadb_java
-
 }
 
 # operating settings for Database & Middleware
 class soadb_os {
 
   service { iptables:
-        enable    => false,
-        ensure    => false,
-        hasstatus => true,
+    enable    => false,
+    ensure    => false,
+    hasstatus => true,
   }
 
-  group { 'dba' :
+  $groups = ['oinstall','dba' ,'oper' ]
+
+  group { $groups :
     ensure      => present,
   }
 
   user { 'oracle' :
     ensure      => present,
-    gid         => 'dba',  
-    groups      => 'dba',
+    uid         => 500,
+    gid         => 'oinstall',  
+    groups      => $groups,
     shell       => '/bin/bash',
     password    => '$1$DSJ51vh6$4XzzwyIOk6Bi/54kglGk3.',
     home        => "/home/oracle",
-    comment     => "This user ${user} was created by Puppet",
-    require     => Group['dba'],
+    comment     => "This user oracle was created by Puppet",
+    require     => Group[$groups],
     managehome  => true,
   }
 
@@ -82,8 +83,10 @@ class soadb_11g {
             oracleHome             => hiera('oracle_home_dir'),
             userBaseDir            => '/home',
             createUser             => false,
-            user                   => hiera('oracle_os_user'),
-            group                  => hiera('oracle_os_group'),
+            user                   => 'oracle',
+            group                  => 'dba',
+            group_install          => 'oinstall',
+            group_oper             => 'oper',
             downloadDir            => hiera('oracle_download_dir'),
             remoteFile             => false,
             puppetDownloadMntPoint => hiera('oracle_source'),  
@@ -181,7 +184,6 @@ class soadb_maintenance {
     }
   }
 
-
   cron { 'oracle_db_opatch' :
     command => "find /oracle/product/11.2/db/cfgtoollogs/opatch -name 'opatch*.log' -mtime ${mtimeParam} -exec rm {} \\; >> /tmp/opatch_db_purge.log 2>&1",
     user    => oracle,
@@ -195,27 +197,4 @@ class soadb_maintenance {
     hour    => 06,
     minute  => 32,
   }
-
-
 }
-
-class soadb_java {
-  require soadb_os
-  
-  include jdk7
-
-  jdk7::install7{ 'jdk1.7.0_45':
-    version              => "7u45" , 
-    fullVersion          => "jdk1.7.0_45",
-    alternativesPriority => 18000, 
-    x64                  => true,
-    downloadDir          => "/data/install",
-    urandomJavaFix       => false,
-    sourcePath           => "/software"
-  }
-
-  class { 'jdk7::urandomfix' :}  
-  
-
-} 
-

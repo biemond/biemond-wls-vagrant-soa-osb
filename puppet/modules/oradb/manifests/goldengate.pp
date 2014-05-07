@@ -12,6 +12,7 @@ define oradb::goldengate( $version                 = '12.1.2',
                           $managerPort             = undef,
                           $user                    = 'ggate',
                           $group                   = 'dba',
+                          $group_install           = 'oinstall',
                           $downloadDir             = '/install',
                           $puppetDownloadMntPoint  = undef,
 )
@@ -66,7 +67,7 @@ define oradb::goldengate( $version                 = '12.1.2',
 
       oradb::utils::orainst{"ggate orainst ${version}":
         ora_inventory_dir => $oraInventory,
-        os_group          => $group,
+        os_group          => $group_install,
       }
       
       exec { "install oracle goldengate":
@@ -80,7 +81,7 @@ define oradb::goldengate( $version                 = '12.1.2',
           path        => "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin",
           logoutput   => true,
           user        => $user,
-          group       => $group,
+          group       => $group_install,
           returns     => [3,0],
       }
 

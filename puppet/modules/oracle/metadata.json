@@ -1,0 +1,300 @@
+{
+  "name": "hajee-oracle",
+  "version": "0.2.1",
+  "source": "http:/www.github.com/hajee/oracle",
+  "author": "Bert Hajee",
+  "license": "Apache License, Version 2.0",
+  "summary": "the custom types needed to manage the basic setup of an Oracle database",
+  "description": "the custom types needed to manage the basic setup of an Oracle database. It contains: tablespace, oracle_user, grant etc",
+  "project_page": "http:/www.github.com/hajee/oracle",
+  "dependencies": [
+    {
+      "name": "hajee/easy_type",
+      "version_requirement": ">= 0.6.4"
+    }
+  ],
+  "types": [
+    {
+      "name": "listener",
+      "doc": "This is the oracle listener process",
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "Whether a listener should be running.\n\nValid values are `stopped` (also called `false`), `running` (also called `true`). "
+        }
+      ],
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "        The name of the listner to run.\n\n"
+        }
+      ],
+      "providers": [
+        {
+          "name": "listener",
+          "doc": ""
+        }
+      ]
+    },
+    {
+      "name": "oracle_service",
+      "doc": "\nThis resource allows you to manage a service in an Oracle database.",
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "The basic property that the resource should be in.\n\nValid values are `present`, `absent`. "
+        }
+      ],
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The service name\n\n"
+        }
+      ],
+      "providers": [
+        {
+          "name": "simple",
+          "doc": "Manage Oracle services via regular SQL"
+        }
+      ]
+    },
+    {
+      "name": "oracle_user",
+      "doc": "\nThis resource allows you to manage a user in an Oracle database.",
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "The basic property that the resource should be in.\n\nValid values are `present`, `absent`. "
+        },
+        {
+          "name": "user_id",
+          "doc": "The user id\n\n"
+        },
+        {
+          "name": "default_tablespace",
+          "doc": "The user's default tablespace\n\n"
+        },
+        {
+          "name": "temporary_tablespace",
+          "doc": "The user's temporary tablespace\n\n"
+        },
+        {
+          "name": "quotas",
+          "doc": "quota's for this user\n\n"
+        },
+        {
+          "name": "grants",
+          "doc": "grants for this user\n\n"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The user name\n\n"
+        },
+        {
+          "name": "password",
+          "doc": "The user's password\n\n"
+        }
+      ],
+      "providers": [
+        {
+          "name": "simple",
+          "doc": "Manage Oracle users in an Oracle Database via regular SQL"
+        }
+      ]
+    },
+    {
+      "name": "role",
+      "doc": "This resource allows you to manage a role in an Oracle database.",
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "The basic property that the resource should be in.\n\nValid values are `present`, `absent`. "
+        },
+        {
+          "name": "password",
+          "doc": "The password\n\n"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The role name\n\n"
+        }
+      ],
+      "providers": [
+        {
+          "name": "simple",
+          "doc": "Manage an Oracle role in an Oracle Database via regular SQL"
+        }
+      ]
+    },
+    {
+      "name": "tablespace",
+      "doc": "This resource allows you to manage an Oracle tablespace.",
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "The basic property that the resource should be in.\n\nValid values are `present`, `absent`. "
+        },
+        {
+          "name": "logging",
+          "doc": "TODO: Add description\n\nValid values are `yes`, `no`. "
+        },
+        {
+          "name": "datafile",
+          "doc": "The name of the datafile\n\n"
+        },
+        {
+          "name": "size",
+          "doc": "The size of the tablespace\n\n"
+        },
+        {
+          "name": "autoextend",
+          "doc": "Enable autoextension for the tablespace\n\nValid values are `on`, `off`. "
+        },
+        {
+          "name": "next",
+          "doc": "Size of the next autoextent\n\n"
+        },
+        {
+          "name": "max_size",
+          "doc": "maximum size for autoextending\n\n"
+        },
+        {
+          "name": "extent_management",
+          "doc": "TODO: Give description\n\nValid values are `local`, `dictionary`. "
+        },
+        {
+          "name": "segment_space_management",
+          "doc": "TODO: Give description\n\nValid values are `auto`, `manual`. "
+        },
+        {
+          "name": "bigfile",
+          "doc": "the type of datafile used for the tablespace\n\nValid values are `yes`, `no`. "
+        }
+      ],
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The tablespace name\n\n"
+        }
+      ],
+      "providers": [
+        {
+          "name": "simple",
+          "doc": "Manage an Oracle Tablespace in an Oracle Database via regular SQL"
+        }
+      ]
+    }
+  ],
+  "checksums": {
+    "CHANGELOG": "7a971caffac84d3a3da1a53c8d8678d4",
+    "CONTRIBUTING.md": "ec539f7912da25760720eebf9756ae65",
+    "CONTRIBUTORS": "433de1fd256bc70e190d676baf236ff3",
+    "Gemfile": "8d20c7d4abbb27d8fd9ec7533c66af3f",
+    "Gemfile.lock": "68fc3cfe6c584ed65a2b4211b68a6aff",
+    "Guardfile": "3ae8d9a61b870350cc1c8e0d6a9a36e7",
+    "LICENSE": "47bbee59c4c1cb14cc3667035a227be0",
+    "Modulefile": "3ff174def2b8a6210f18084b63221343",
+    "Puppetfile": "4dc5c217d4c58ccdb7fee75b57d09d63",
+    "Puppetfile.lock": "79995f4e9c48898ef9d4aba0f52465ab",
+    "README.markdown": "a0d7eec75d6e4641334d16d989d8318b",
+    "Rakefile": "67b253f72e3ba3824fe47f7d25d54ff3",
+    "files/execute.sql.erb": "909bc64557cbe09a4be763a961b06ff1",
+    "lib/puppet/provider/listener/listener.rb": "c1df80cc4155ea56c0fb2e029161db35",
+    "lib/puppet/provider/oracle_service/simple.rb": "3faabc988334a37f9a03ef961fdbbaa0",
+    "lib/puppet/provider/oracle_user/simple.rb": "f779a0e7aac23fffec4bdc3ebbb1253e",
+    "lib/puppet/provider/role/simple.rb": "789ad07c5d4dfe9e2ee0824e7e09211a",
+    "lib/puppet/provider/tablespace/simple.rb": "865359e49ddcf9617abd806962f0a924",
+    "lib/puppet/type/listener.rb": "fe080086d7d7da7745566623b6e45e1d",
+    "lib/puppet/type/oracle_service/name.rb": "bee5b7ba139468ae7ffc30d8ba926c66",
+    "lib/puppet/type/oracle_service.rb": "7657a96177ac80aa9df194eb74f4a10b",
+    "lib/puppet/type/oracle_user/default_tablespace.rb": "ea4e69cab58f2aea28c834f4425a3ec7",
+    "lib/puppet/type/oracle_user/grants.rb": "0d4475c2ec0b0c7c9ed172d69ba3c44b",
+    "lib/puppet/type/oracle_user/name.rb": "84b017f07b247402b5fe73a0bf61b855",
+    "lib/puppet/type/oracle_user/password.rb": "1fe1b0094ac6cb1981bb9484b3322de1",
+    "lib/puppet/type/oracle_user/quotas.rb": "15517a3c570b69958f2df619a760309f",
+    "lib/puppet/type/oracle_user/temporary_tablespace.rb": "7cb1c1608f8e1e471c16ca9cd4d3bc6b",
+    "lib/puppet/type/oracle_user/user_id.rb": "ee97b90df0b7bfb36e7ff001bd83da82",
+    "lib/puppet/type/oracle_user.rb": "e67139b656af8425655e6eb881132925",
+    "lib/puppet/type/role/name.rb": "5bef057a7841abe56f792fac59a83b02",
+    "lib/puppet/type/role/password.rb": "363242c6a0e65981d7cdb741be115a2b",
+    "lib/puppet/type/role.rb": "fe5a0df83aedb4b78b7ef55f85708c58",
+    "lib/puppet/type/tablespace/autoextend.rb": "6a818e73e31d45273522a918ffd7372c",
+    "lib/puppet/type/tablespace/bigfile.rb": "6f5e183a4c846ebaf0738caf5eff72ef",
+    "lib/puppet/type/tablespace/datafile.rb": "0879e990f0e71f0d145e3d43ba208bd4",
+    "lib/puppet/type/tablespace/extent_management.rb": "ae0e7db04459d1d243b1651673625a3f",
+    "lib/puppet/type/tablespace/logging.rb": "9ecd7667afc66380c0bd7e61f42267a4",
+    "lib/puppet/type/tablespace/max_size.rb": "35f8d2342c9c3921d60e990c48f0c521",
+    "lib/puppet/type/tablespace/name.rb": "5ac21c0e35c6bdfd86698a5d31dc6eb9",
+    "lib/puppet/type/tablespace/next.rb": "25a6b63c15cd8f005cd2d528c8a0d77e",
+    "lib/puppet/type/tablespace/segment_space_management.rb": "09661bed0c60ea8406246ff78c8f0813",
+    "lib/puppet/type/tablespace/size.rb": "129599d952210dfda67712dbd4934b78",
+    "lib/puppet/type/tablespace.rb": "128fa93cdfdb615234101190a078514b",
+    "lib/utils/oracle_access.rb": "8a12d6f8f39f9c0b0587c1f2489c8d13",
+    "modules/easy_type/Gemfile": "2e4406b62c98f4df984e1b09c0e08297",
+    "modules/easy_type/Gemfile.lock": "e02221a575b2a05cd19564335ab59a2f",
+    "modules/easy_type/Guardfile": "0661e1bb1642d94025a9777a49981a24",
+    "modules/easy_type/History.md": "ee757be6a72c5a9c50dd7495fc44b5ac",
+    "modules/easy_type/License": "0da8d7680850e6fd58533996cdd59592",
+    "modules/easy_type/Modulefile": "89e80930212b11573c0e1e83807a8f26",
+    "modules/easy_type/README.md": "c1431e5c11e9ba47d5569f0531fc260b",
+    "modules/easy_type/Rakefile": "bbf7a7f6cb64397940a6d553777ac386",
+    "modules/easy_type/TODO.md": "1ddfaa0e8dd78ab07c0a6cdab40ce3ac",
+    "modules/easy_type/lib/easy_type/blank_slate.rb": "8db3b0db7e999bf1b17d6adf8b555701",
+    "modules/easy_type/lib/easy_type/command_entry.rb": "e3cbe37787d22df6df4def11493725d1",
+    "modules/easy_type/lib/easy_type/file_includer.rb": "d9c6744e8c3379352461bc1bfd509c14",
+    "modules/easy_type/lib/easy_type/group.rb": "b32402868508c5c30c43b5bf3335ae8d",
+    "modules/easy_type/lib/easy_type/helpers.rb": "c33f5ffaee16c359f4cbe243ac6e0545",
+    "modules/easy_type/lib/easy_type/include_check.rb": "095fb2b71b4a80bcdbd726af00d1f7e2",
+    "modules/easy_type/lib/easy_type/mungers.rb": "1bed3f72f6c1ff5a756f1b6d225c19a7",
+    "modules/easy_type/lib/easy_type/parameter.rb": "464bd35ed9c424deaef656cdaba4caca",
+    "modules/easy_type/lib/easy_type/provider.rb": "3af112fe5fae36e5121fa8c57fa37a2f",
+    "modules/easy_type/lib/easy_type/script_builder.rb": "b9236733de0c0a3c734bc11632d22d83",
+    "modules/easy_type/lib/easy_type/template.rb": "affe6fd1d8eb120a9a924c0b69c850b0",
+    "modules/easy_type/lib/easy_type/type.rb": "6d1a5b5072b60967397ed6d7565c9717",
+    "modules/easy_type/lib/easy_type/validators.rb": "4ef27f8e67f9caf72a76adc43171a376",
+    "modules/easy_type/lib/easy_type/version.rb": "0e8834d34be44538aed9b744a166e117",
+    "modules/easy_type/lib/easy_type.rb": "845e2496493c2e7018ba44e9c37764a8",
+    "modules/easy_type/lib/puppet/type/test/a_test.rb": "12ef6d0876ea5177c5b21a9800514de7",
+    "modules/easy_type/lib/puppet/type/test/b_test.rb": "299f6c368b713b9983bf61a6ebbf6221",
+    "modules/easy_type/lib/puppet/type/test/first_in_group.rb": "8646a0dba209ccb6085150f1821fc077",
+    "modules/easy_type/lib/puppet/type/test/second_in_group.rb": "aba7adb29b5c3a6bba06df8e9c5a6177",
+    "modules/easy_type/manifests/init.pp": "50f53438d16291804d687dce0c972e05",
+    "modules/easy_type/scaffold/provider/example_folder/simple.rb": "f6d9c561ff5e879a1a971423c42d71f8",
+    "modules/easy_type/scaffold/type/example_type/just_an_other_parameter.rb": "1de8cfebe03ae6debe380da057909c03",
+    "modules/easy_type/scaffold/type/example_type/just_an_other_property.rb": "49f87acda016d3acafaf6b34c49c57c9",
+    "modules/easy_type/scaffold/type/example_type.rb": "2e7cabf47ddd32ba6fe85a384888d516",
+    "modules/easy_type/spec/spec_helper.rb": "aa27cc7edeb26247c6979c272a728019",
+    "modules/easy_type/spec/support/shared_examples.rb": "6fcd6ec05582a907ee292bb9721e7c66",
+    "modules/easy_type/spec/unit/easy_type/file_includer_spec.rb": "1a73e42170773b4c2b52aea40458b0f0",
+    "modules/easy_type/spec/unit/easy_type/group_spec.rb": "59c0086750aeced284eec06c674d0914",
+    "modules/easy_type/spec/unit/easy_type/helpers_spec.rb": "fd47408a7c9e322a37873e5187102d2c",
+    "modules/easy_type/spec/unit/easy_type/mungers_spec.rb": "ad910a0335ed2d028f16a8254595a0d5",
+    "modules/easy_type/spec/unit/easy_type/parameter_spec.rb": "d98785fa814e0efbaa87c6aef04f3398",
+    "modules/easy_type/spec/unit/easy_type/provider_spec.rb": "fd0f72e8ac3380d3b17dd5f6a053b356",
+    "modules/easy_type/spec/unit/easy_type/script_builder_spec.rb": "41b0c0508a157965e845215e450684d0",
+    "modules/easy_type/spec/unit/easy_type/template_spec.rb": "363f676dbf25b6304d47fc4e0bc7bbf9",
+    "modules/easy_type/spec/unit/easy_type/test_type.rb": "4c3858612ec065700631eb07cd895698",
+    "modules/easy_type/spec/unit/easy_type/type_spec.rb": "4d7db1c4ee8bfe349bb03cc50295d34a",
+    "modules/easy_type/spec/unit/easy_type/validators_spec.rb": "38880a96e689c0bf3f2fb912282624c2",
+    "modules/easy_type/templates/existing_test_template.txt.erb": "b660fdca11e33267df34f174e68f765e",
+    "modules/easy_type/tests/init.pp": "eb7d8cf10ab893c160d142ee440e35ef",
+    "spec/acceptance/nodesets/centos-64-x64.yml": "7ad72bad9087a52f30c6f7d5600b68dd",
+    "spec/acceptance/nodesets/default.yml": "1091bb0897dc8ee94a391ab1d8e45132",
+    "spec/acceptance/nodesets/ubuntu-server-12042-x64.yml": "1091bb0897dc8ee94a391ab1d8e45132",
+    "spec/acceptance/tablespace_spec.rb": "619fd301f59131669fb6bd6f5d40e755",
+    "spec/classes/coverage_spec.rb": "5b6dfa0dd426aca0ccfae23c0a629f0b",
+    "spec/classes/example_spec.rb": "a0a2f4aeae92a0405379853e7ba84505",
+    "spec/spec_helper.rb": "76be8d96ffcc44d82d1deb2f89ad11eb",
+    "spec/spec_helper_acceptance.rb": "87ba6738f20fe0d5b1bed4be20660455",
+    "spec/support/easy_type_shared_specs.rb": "b6f48bcbf0821ab8a024025082666523",
+    "spec/unit/puppet/type/oracle_service_spec.rb": "38cb2ab8f7139adacfbf4944226c500a",
+    "spec/unit/puppet/type/oracle_user_spec.rb": "2d155ced648c5da20214211c7d9a42eb",
+    "spec/unit/puppet/type/role_spec.rb": "4cb435fe4af56bdce7df5f5aec191dee",
+    "spec/unit/puppet/type/tablespace_spec.rb": "e0d1fcff7c2bf9d3e6340cea8f678835",
+    "tests/init.pp": "f4b41706b21fc784db25e87c761a2aff"
+  }
+}
