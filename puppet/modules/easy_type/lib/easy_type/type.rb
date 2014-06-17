@@ -114,9 +114,44 @@ module EasyType
         @groups ||= EasyType::Group.new
         @groups
       end
+
+
+      #
+      # easy way to map parts of a title to one of the attributes and properties
+      # `puppet/type/type_name/parameter_name, or in the shared directory `puppet/type/shared`
+      #
+      # @example
+      # map_title_to_attributes(/^((.*\/)?(.*):(.*)?)$/) do
+      #   [:name,:domain, :jmsmodule, :queue_name]
+      # end
+      #
+      # @param [Regexp] regexp the regular expression to map parts of the title
+      # @yield yields an array containing the symbols idetifying the parameters an properties to use
+      #
+      def map_title_to_attributes(*attributes)
+        attribute_array = attributes.map  do | attr| 
+          case attr
+          when Array  then attr
+          when Symbol then [attr, nil]
+          when String then [attr.to_sym, nil]
+          when Hash   then attr.to_a.flatten
+          else fail "map_title_to_attribute, doesn\'t support #{attr.class} as attribute"
+          end
+        end
+        regexp = yield
+        eigenclass.send(:define_method,:title_patterns) do 
+          [
+            [
+              regexp,
+              attribute_array
+            ]
+          ]
+        end
+      end
+
       #
       # include's the parameter declaration. It searches for the parameter file in the directory
-      # `puppet/type/type_name/parameter_name
+      # `puppet/type/type_name/parameter_name, or in the shared directory `puppet/type/shared`
       #
       # @example
       #  parameter(:name)
@@ -124,9 +159,34 @@ module EasyType
       # @param [Symbol] parameter_name the base name of the parameter
       #
       def parameter(parameter_name)
-        include_file "puppet/type/#{name}/#{parameter_name}"
+        if specific_file?(parameter_name)
+          return include_file specific_file(parameter_name)
+        elsif shared_file?(parameter_name)
+          return include_file shared_file(parameter_name)
+        end
+        fail ArgumentError, "file puppet/type/#{name}/#{parameter_name} not found"
       end
       alias_method :property, :parameter
+
+      # @private
+      def specific_file(parameter_name)
+        get_ruby_file("puppet/type/#{name}/#{parameter_name}")
+      end
+
+      # @private
+      def specific_file?(parameter_name)
+        !specific_file(parameter_name).nil?
+      end
+
+      # @private
+      def shared_file(parameter_name)
+        get_ruby_file("puppet/type/shared/#{parameter_name}")
+      end
+
+      # @private
+      def shared_file?(parameter_name)
+        !shared_file(parameter_name).nil?
+      end
 
       #
       # set's the command to be executed. If the specified argument translate's to an existing
@@ -154,11 +214,16 @@ module EasyType
 
       # @private
       def define_os_command_method(method_or_command)
-        eigenclass = class << self; self; end
         eigenclass.send(:define_method, method_or_command) do | *args|
           command = args.dup.unshift(method_or_command)
           Puppet::Util::Execution.execute(command)
         end
+      end
+
+
+      # @private
+      def eigenclass
+        class << self; self; end
       end
 
       #
@@ -229,7 +294,6 @@ module EasyType
       # @param [Method] block The code to be run to fetch the raw resource information from the system.
       #
       def to_get_raw_resources(&block)
-        eigenclass = class << self; self; end
         eigenclass.send(:define_method, :get_raw_resources, &block)
       end
     end

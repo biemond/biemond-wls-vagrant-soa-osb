@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 oracle_user = Puppet::Type.type(:oracle_user)
-InstancesResults = EasyType::Helpers::InstancesResults
 
 describe oracle_user do
 

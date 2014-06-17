@@ -20,6 +20,9 @@ Should work for Puppet 2.7 & 3.0
 
 ##Version updates
 
+- 1.0.9 11.2 EE install options
+- 1.0.8 RCU & Opatch fixes in combination with ruby 1.9.3
+- 1.0.7 Added unit tests and OPatch upgrade support without OCM registration
 - 1.0.6 Grid install and ASM support
 - 1.0.5 refactored installdb and support for oinstall groups
 - 1.0.4 db_rcu native type used in rcu.pp
@@ -194,6 +197,8 @@ or
             databaseType           => 'SE',
             oracleBase             => '/oracle',
             oracleHome             => '/oracle/product/11.2/db',
+            eeOptionsSelection     => true,
+            eeOptionalComponents   => 'oracle.rdbms.partitioning:11.2.0.4.0,oracle.oraolap:11.2.0.4.0,oracle.rdbms.dm:11.2.0.4.0,oracle.rdbms.dv:11.2.0.4.0,oracle.rdbms.lbac:11.2.0.4.0,oracle.rdbms.rat:11.2.0.4.0',
             createUser             => true,
             user                   => 'oracle',
             group                  => 'dba',
@@ -241,11 +246,15 @@ or
 
 other
 
+For opatchupgrade you need to provide the Oracle support csiNumber and supportId and need to be online. Or leave them empty but it needs the Expect rpm to emulate OCM
+
     oradb::opatchupgrade{'112000_opatch_upgrade':
         oracleHome             => '/oracle/product/11.2/db',
         patchFile              => 'p6880880_112000_Linux-x86-64.zip',
-        csiNumber              => '11111',
-        supportId              => 'biemond@gmail.com',
+      #  csiNumber              => '11111',
+      #  supportId              => 'biemond@gmail.com',
+        csiNumber              => undef,
+        supportId              => undef,
         opversion              => '11.2.0.3.6',
         user                   => 'oracle',
         group                  => 'dba',
@@ -257,6 +266,7 @@ other
     # for this example OPatch 14727310
     # the OPatch utility must be upgraded ( patch 6880880, see above)
     oradb::opatch{'14727310_db_patch':
+       ensure                 => 'present',
        oracleProductHome      => '/oracle/product/11.2/db',
        patchId                => '14727310',
        patchFile              => 'p14727310_112030_Linux-x86-64.zip',

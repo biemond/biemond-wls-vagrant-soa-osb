@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 role = Puppet::Type.type(:role)
-InstancesResults = EasyType::Helpers::InstancesResults
 
 describe role do
 

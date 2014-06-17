@@ -8,7 +8,7 @@ newproperty(:segment_space_management) do
     raw_resource.column_data('SEGMEN').downcase.to_sym
   end
 
-  on_apply do
+  on_apply do | command_builder|
     "segment space management #{resource[:segment_space_management]}"
   end
 

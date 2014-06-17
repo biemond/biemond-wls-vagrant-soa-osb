@@ -8,13 +8,18 @@ group :development, :test do
     gem 'travis-lint'
     gem 'vagrant-wrapper'
     gem 'puppet-blacksmith'
-    gem 'guard'
     gem 'ruby_gntp'
+  end
+end
+
+group :development do
+  platform :ruby_19, :ruby_20 do
     gem 'guard-rspec'
     gem 'pry'
     gem 'pry-debugger'
   end
 end
+
 
 group :test do
   platform :ruby_19, :ruby_20 do

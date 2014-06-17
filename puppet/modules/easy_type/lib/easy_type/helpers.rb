@@ -2,9 +2,12 @@
 require 'version_differentiator'
 ruby_18 do
   require '1.8.7/csv'
-  CSV = FasterCSV
+  EASY_CSV = FasterCSV
 end
-ruby_19 { require 'csv' }
+ruby_19 { 
+  require 'csv' 
+  EASY_CSV = CSV
+}
 
 module EasyType
   #
@@ -60,7 +63,7 @@ module EasyType
       options = default_options.merge(options)
       skip_lines = options.delete(:skip_lines) { HEADER_LINE_REGEX }
       data = []
-      CSV.parse(csv_data, options) do |row|
+      EASY_CSV.parse(csv_data, options) do |row|
         data << InstancesResults[row.to_a] unless row_contains_skip_line(row, skip_lines)
       end
       data

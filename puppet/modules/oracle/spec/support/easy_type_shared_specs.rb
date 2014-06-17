@@ -51,7 +51,7 @@ shared_examples "an easy_type attribute" do |test_attributes|
         end
 
         it "returns #{apply_text}" do
-          expect(attribute.on_apply).to eq apply_text
+          expect(attribute.on_apply(nil)).to eq apply_text
         end
 
       end

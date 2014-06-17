@@ -1,5 +1,6 @@
 require 'tempfile'
 require 'fileutils'
+require 'utils/ora_daemon'
 
 module Utils
   module OracleAccess
@@ -21,8 +22,11 @@ module Utils
       sid = parameters.fetch(:sid) {
         oratab.first[:sid] # For now if no sid is given always use the first one
       }
+      username = parameters.fetch(:username) { 'sysdba'}
+      password = parameters[:password] # nil is allowed
+
       Puppet.info "Executing: #{command} on database #{sid}"
-      csv_string = execute_sql(command, :sid => sid)
+      csv_string = execute_sql(command, :sid => sid, :username => username, :password => password)
       convert_csv_data_to_hash(csv_string, [], :converters=> lambda {|f| f ? f.strip : nil})
     end
 
@@ -43,15 +47,13 @@ module Utils
 
     def execute_sql(command, parameters)
       db_sid = parameters.fetch(:sid) { raise ArgumentError, "No sid specified"}
+      username = parameters.fetch(:username) { 'sysdba'}
+      password = parameters[:password] # null allowd
+      daemon = OraDaemon.run('oracle', db_sid, username, password)
       outFile = Tempfile.new([ 'output', '.csv' ])
       outFile.close
       FileUtils.chmod(0777, outFile.path)
-      tmpFile = Tempfile.new([ 'sql', '.sql' ])
-      tmpFile.puts template('puppet:///modules/oracle/execute.sql.erb', binding)
-      tmpFile.close
-      FileUtils.chmod(0555, tmpFile.path)
-      output = `su - oracle -c 'export ORACLE_SID=#{db_sid};export ORAENV_ASK=NO;. oraenv;sqlplus -s /nolog @#{tmpFile.path}'`
-      raise ArgumentError, "Error executing puppet code, #{output}" if $? != 0
+      daemon.execute_sql_command(command, outFile.path)
       File.read(outFile.path)
     end
 

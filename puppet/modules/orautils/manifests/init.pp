@@ -2,45 +2,50 @@
 #
 #
 class orautils(
-  $osOracleHomeParam      = undef,
-  $oraInventoryParam      = undef,
-  $osDomainTypeParam      = undef,
-  $osLogFolderParam       = undef,
-  $osDownloadFolderParam  = undef,
-  $osMdwHomeParam         = undef,
-  $osWlHomeParam          = undef,
-  $oraUserParam           = undef,
-  $osDomainParam          = undef,
-  $osDomainPathParam      = undef,
-  $nodeMgrPathParam       = undef,
-  $nodeMgrPortParam       = undef,
-  $nodeMgrAddressParam    = undef,
-  $wlsUserParam           = undef,
-  $wlsPasswordParam       = undef,
-  $wlsAdminServerParam    = undef,
-  $jsseEnabledParam       = undef,
+  $osOracleHomeParam       = undef,
+  $oraInventoryParam       = undef,
+  $osDomainTypeParam       = undef,
+  $osLogFolderParam        = undef,
+  $osDownloadFolderParam   = undef,
+  $osMdwHomeParam          = undef,
+  $osWlHomeParam           = undef,
+  $oraUserParam            = undef,
+  $oraGroupParam           = undef,
+  $osDomainParam           = undef,
+  $osDomainPathParam       = undef,
+  $nodeMgrPathParam        = undef,
+  $nodeMgrPortParam        = undef,
+  $nodeMgrAddressParam     = undef,
+  $wlsUserParam            = undef,
+  $wlsPasswordParam        = undef,
+  $wlsAdminServerParam     = undef,
+  $jsseEnabledParam        = undef,
+  $customTrust             = false,
+  $trustKeystoreFile       = undef,
+  $trustKeystorePassphrase = undef,
 ) {
 
   include orautils::params
 
-  case $operatingsystem {
-    'CentOS', 'RedHat', 'OracleLinux', 'Ubuntu', 'Debian', 'SLES', 'Solaris': {
+  case $::kernel {
+    'Linux', 'SunOS': {
 
-    # fixed
-
-    if $oraUserParam != undef {
-      $user           = $oraUserParam
+    if $oraUserParam == undef {
+      $user           = $orautils::params::oraUser
     } else {
-      $user           = "oracle"
+      $user           = $oraUserParam
     }
-    $group            = "dba"
+    if $oraGroupParam == undef {
+      $group          = $orautils::params::oraGroup
+    } else {
+      $group          = $oraGroupParam
+    }
+
     $mode             = "0775"
 
-    # ok
     $shell            = $orautils::params::shell
     $userHome         = $orautils::params::userHome
     $oraInstHome      = $orautils::params::oraInstHome
-
 
     if ( $osDomainTypeParam == undef ) {
       $osDomainType = $orautils::params::osDomainType
@@ -143,6 +148,12 @@ class orautils(
     } else {
       $jsseEnabled = $jsseEnabledParam
     }
+
+    if $customTrust == true {
+      $trust_env = "-Dweblogic.security.TrustKeyStore=CustomTrust -Dweblogic.security.CustomTrustKeyStoreFileName=${trustKeystoreFile} -Dweblogic.security.CustomTrustKeystorePassPhrase=${trustKeystorePassphrase}"
+    } else {
+      $trust_env = ""
+    }
     
     if ! defined(File['/opt/scripts']) {
       file { '/opt/scripts':
@@ -166,7 +177,6 @@ class orautils(
         require => File['/opt/scripts'],
       }
     }
-
 
     file { "showStatus.sh":
       ensure  => present,
@@ -198,7 +208,6 @@ class orautils(
       require => File['/opt/scripts/wls'],
     }
 
-
     file { "startNodeManager.sh":
       ensure  => present,
       path    => "/opt/scripts/wls/startNodeManager.sh",
@@ -208,7 +217,6 @@ class orautils(
       mode    => $mode,
       require => File['/opt/scripts/wls'],
     }
-
 
     file { "startWeblogicAdmin.sh":
       ensure  => present,

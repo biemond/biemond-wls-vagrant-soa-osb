@@ -1,0 +1,12 @@
+image: bradrydzewski/ruby:1.9.3
+script:
+  - gem update --system 2.2.1
+  - gem --version
+  - bundle install
+  - rbenv rehash
+  - librarian-puppet install
+  - bundle exec rake test
+notify:
+  email:
+    recipients:
+      - hajee@moretIA.com

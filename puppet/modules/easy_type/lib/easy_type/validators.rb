@@ -1,5 +1,8 @@
-
 # encoding: UTF-8
+#
+#
+# Define all common validators available for all types
+#
 module EasyType
   STRING_OF_DIGITS = /^\d+$/
   #
@@ -42,7 +45,15 @@ module EasyType
     module Integer
       # @private
       def unsafe_validate(value)
-        fail Puppet::Error, "Invalid integer value: #{value}" unless value =~ STRING_OF_DIGITS
+        klass = value.class.to_s
+        case klass
+        when'Fixnum', 'Bignum'
+          return
+        when 'String'
+          fail Puppet::Error, "Invalid integer value: #{value}" unless value =~ STRING_OF_DIGITS
+        else
+          fail Puppet::Error, "Invalid integer value: #{value}"
+        end
       end
     end
   end

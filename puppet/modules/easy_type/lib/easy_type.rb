@@ -11,6 +11,7 @@ require 'easy_type/script_builder'
 require 'easy_type/group'
 require 'easy_type/template'
 require 'easy_type/helpers'
+require 'easy_type/daemon'
 
 # @nodoc
 module EasyType

@@ -1,8 +1,7 @@
 #
 #
 #
-class orautils::params()
-{
+class orautils::params(){
 
   $osOracleHome = $::hostname ? {
     wls12           => "/oracle/product",
@@ -35,8 +34,8 @@ class orautils::params()
   }
 
   $shell        = $::operatingsystem ? { 
-    'Solaris' => "!/usr/bin/ksh",
-    default   => "!/bin/sh",
+    'Solaris' => "/usr/bin/ksh",
+    default   => "/bin/sh",
   }
 
   $osMdwHome     = $::hostname ?  { 
@@ -51,6 +50,10 @@ class orautils::params()
 
   $oraUser      = $::hostname ? { 
     default => "oracle",
+  }
+
+  $oraGroup     = $::hostname ? { 
+    default => "dba",
   }
 
   $userHome     = $::operatingsystem ? { 

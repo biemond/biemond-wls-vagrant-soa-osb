@@ -33,9 +33,15 @@ module EasyType
 
     # @private
     def get_ruby_file(name)
+      return name if absolute_path?(name)
       name += '.rb' unless name =~ /\.rb$/
       path = $LOAD_PATH.find { |dir| File.exist?(File.join(dir, name)) }
       path && File.join(path, name)
+    end
+
+    # @private
+    def absolute_path?(path)
+      !(path =~ /^\//).nil?
     end
   end
 end

@@ -14,7 +14,7 @@ newproperty(:logging) do
     end
   end
 
-  on_apply do
+  on_apply do | command_builder|
     if resource[:logging] == :yes
       "logging"
     else

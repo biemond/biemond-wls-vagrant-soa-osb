@@ -11,7 +11,7 @@ newproperty(:temporary_tablespace) do
   end
 
 
-  on_apply do
+  on_apply do | command_builder|
     "temporary tablespace #{resource[:temporary_tablespace]}"
   end
 

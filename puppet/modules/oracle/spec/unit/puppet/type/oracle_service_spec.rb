@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 oracle_service = Puppet::Type.type(:oracle_service)
-InstancesResults = EasyType::Helpers::InstancesResults
 
 describe oracle_service do
 

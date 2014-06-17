@@ -10,11 +10,11 @@ newproperty(:quotas) do
     quota_for(username)
   end
 
-  def validate(value)
+  def raw_validate(value)
     Puppet.Error "resource must be a hash like structure" unless value.class == Hash
   end
 
-  def munge(value)
+  def unsafe_munge(value)
     return_value = {}
     value.each do | tablespace_name, quota|
       return_value.merge!({ tablespace_name.upcase => quota })

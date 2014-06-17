@@ -8,7 +8,7 @@ newproperty(:extent_management) do
     raw_resource.column_data('EXTENT_MAN').downcase.to_sym
   end
 
-  on_apply do
+  on_apply do | command_builder|
     "extent management #{resource[:extent_management]}"
   end
 

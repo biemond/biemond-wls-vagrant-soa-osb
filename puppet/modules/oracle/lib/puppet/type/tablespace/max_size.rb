@@ -5,12 +5,12 @@ newproperty(:max_size) do
 
   desc "maximum size for autoextending"
 
-  # TODO: Check why it doesn't retirn the right values
+  # TODO: Check why it doesn't return the right values
   to_translate_to_resource do | raw_resource|
     raw_resource.column_data('MAX_SIZE').to_f.to_i
   end
 
-  on_apply do
+  on_apply do | command_builder|
   	"maxsize #{should}"
   end
 

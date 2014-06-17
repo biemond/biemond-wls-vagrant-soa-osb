@@ -10,7 +10,7 @@ newproperty(:next) do
     increment * block_size
   end
 
-  on_apply do
+  on_apply do | command_builder|
     "next #{resource[:next]}"
   end
 

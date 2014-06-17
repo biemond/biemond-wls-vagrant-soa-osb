@@ -26,6 +26,15 @@ describe EasyType::Validators::Integer do
 		expect(unsafe_validate('123')).to eql nil
 	end
 
+	it "does nothing on a valid integer" do
+		expect(unsafe_validate(123)).to eql nil
+	end
+
+	it "raises ArgumentError on a real " do
+		expect{unsafe_validate(3.5)}.to raise_error(Puppet::Error)
+	end
+
+
 	it "raises ArgumentError on empty string" do
 		expect{unsafe_validate('')}.to raise_error(Puppet::Error)
 	end

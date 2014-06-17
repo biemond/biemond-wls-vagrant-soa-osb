@@ -10,7 +10,7 @@ newproperty(:user_id) do
     raw_resource.column_data('USER_ID').to_i
   end
 
-  on_apply do
+  on_apply do | command_builder|
     "set user_id = #{resource[:user_id]}"
   end
 

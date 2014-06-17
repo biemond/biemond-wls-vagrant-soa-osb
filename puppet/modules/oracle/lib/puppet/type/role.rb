@@ -23,16 +23,16 @@ module Puppet
       sql "select * from dba_roles"
     end
 
-    on_create do
-    	"create role #{self[:name]}"
+    on_create do | command_builder |
+    	"create role #{name}"
     end
 
-    on_modify do
-      "alter role#{self[:name]}"
+    on_modify do | command_builder |
+      "alter role#{name}"
     end
 
-    on_destroy do
-      "drop role#{self[:name]}"
+    on_destroy do | command_builder |
+      "drop role#{name}"
     end
 
     parameter :name

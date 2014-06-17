@@ -6,7 +6,7 @@ newproperty(:password) do
     ''
   end
 
- on_apply do
+ on_apply do| command_builder|
     "identified by #{value}"
   end
 

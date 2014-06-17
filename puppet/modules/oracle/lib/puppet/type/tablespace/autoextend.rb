@@ -13,7 +13,7 @@ newproperty(:autoextend) do
     end
   end
 
-  on_apply do
+  on_apply do | command_builder|
     "autoextend #{resource[:autoextend]}"
   end
 end

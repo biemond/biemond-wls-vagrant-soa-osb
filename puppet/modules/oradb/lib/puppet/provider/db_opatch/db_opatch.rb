@@ -1,4 +1,3 @@
-require 'rexml/document' 
 
 Puppet::Type.type(:db_opatch).provide(:db_opatch) do
 
@@ -13,23 +12,34 @@ Puppet::Type.type(:db_opatch).provide(:db_opatch) do
     extracted_patch_dir     = resource[:extracted_patch_dir]
     ocmrf_file              = resource[:ocmrf_file]
 
-    if action == :present
-      opatchAction = "-install"
-    else 
-      opatchAction = "-remove"
-    end 
-
     unless ocmrf_file.nil?
       ocmrf = " -ocmrf "+ocmrf_file
     else
       ocmrf = ""
     end
 
-    command = oracle_product_home_dir+"/OPatch/opatch apply -silent "+ ocmrf +" -oh "+oracle_product_home_dir+" "+extracted_patch_dir
-    Puppet.debug "opatch action: #{action} with command #{command}"
+    if action == :present
+      command = "#{oracle_product_home_dir}/OPatch/opatch apply -silent #{ocmrf} -oh #{oracle_product_home_dir} #{extracted_patch_dir}"
+    else 
+      command = "#{oracle_product_home_dir}/OPatch/opatch rollback -id #{patchName} -silent -oh #{oracle_product_home_dir}"
+    end 
 
-    output = execute command, :failonfail => true ,:uid => user
-    Puppet.debug "opatch result: #{output}"
+    Puppet.debug "opatch action: #{action} with command #{command}"
+    output = `su - #{user} -c '#{command}'`
+    #output = execute command, :failonfail => true ,:uid => user
+    Puppet.info "opatch result: #{output}"
+
+    result = false
+    output.each_line do |li|
+      unless li.nil?
+        if li.include? "OPatch completed"
+          result = true
+        end
+      end 
+    end
+    if result == false
+      fail(output)
+    end 
 
   end
 
@@ -43,7 +53,8 @@ Puppet::Type.type(:db_opatch).provide(:db_opatch) do
     command  = oracle_product_home_dir+"/OPatch/opatch lsinventory -patch_id -oh "+oracle_product_home_dir+" -invPtrLoc "+orainst_dir+"/oraInst.loc"
     Puppet.debug "opatch_status for patch #{patchName} command: #{command}"
 
-    output = execute command, :failonfail => true ,:uid => user
+    output = `su - #{user} -c '#{command}'`
+    #output = execute command, :failonfail => true ,:uid => user
     output.each_line do |li|
       opatch = li[5, li.index(':')-5 ].strip + ";" if (li['Patch'] and li[': applied on'] )
       unless opatch.nil?
